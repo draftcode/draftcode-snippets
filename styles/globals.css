@@ -1,26 +1,19 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+@import 'antd/dist/reset.css';
+
+.emoji {
+  height: 1.5em;
+  vertical-align: sub;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+.task {
+  vertical-align: middle;
 }
 
-* {
-  box-sizing: border-box;
+.task svg {
+  height: 1.5em;
+  width: 1.5em;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-  body {
-    color: white;
-    background: black;
-  }
+.snippet-editor textarea {
+  font-family: monospace;
 }
