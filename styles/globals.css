@@ -1,19 +1,20 @@
-@import 'antd/dist/reset.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .emoji {
-  height: 1.5em;
-  vertical-align: sub;
+  margin: 0;
+  height: 0.8em;
+  display: inline;
+  vertical-align: baseline;
 }
 
-.task {
-  vertical-align: middle;
+.task-icon {
+  margin: 0;
 }
 
-.task svg {
-  height: 1.5em;
-  width: 1.5em;
-}
-
-.snippet-editor textarea {
-  font-family: monospace;
+.task-icon svg {
+  height: 0.8em;
+  display: inline;
+  vertical-align: baseline;
 }

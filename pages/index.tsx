@@ -1,12 +1,12 @@
 import { HistoryOutlined, LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons'
-import { Avatar, Button, Col, Empty, Input, Row, Skeleton, Space, Typography } from 'antd'
 import { DateTime } from 'luxon'
 import Link from 'next/link'
 import { useCallback, useEffect, useState } from 'react'
 import { getCurrentUser } from '../lib/firebase'
 import { useSnippet } from "../lib/firebase-snippets"
 import SnippetMarkdown from '../lib/SnippetMarkdown'
-
+import Editor from '@monaco-editor/react'
+import Avatar from '../lib/Avatar'
 
 const SnippetEditor = ({ year, week, nextWeek, prevWeek }: { year: number, week: number, nextWeek: () => void, prevWeek: () => void }) => {
     const { data: snippet, error, mutate } = useSnippet(year, week)
@@ -40,39 +40,41 @@ const SnippetEditor = ({ year, week, nextWeek, prevWeek }: { year: number, week:
 
     const content = pendingContent ?? savedContent ?? ""
     return <>
-        <Row style={{ margin: 10 }}>
-            <Col style={{ alignSelf: "center" }}>
-                <Space direction="horizontal">
-                    <Avatar src={getCurrentUser().photoURL} />
-                    <Typography.Text strong>{`${isoWeek} (${startDate.toISODate()} - ${endDate.toISODate()})`}</Typography.Text>
-                </Space>
-            </Col>
-            <Col flex="auto"></Col>
-            <Col style={{ alignSelf: "center" }}>
-                <Button type="text" icon={<LeftCircleOutlined />} onClick={prevWeek} />
-                <Button type="text" icon={<RightCircleOutlined />} onClick={nextWeek} />
-                <Link href="/history"><Button type="text" icon={<HistoryOutlined />} /></Link>
-            </Col>
-        </Row>
-        <Row gutter={24}>
-            <Col xs={24} xl={12}>
-                {!snippet ? <Skeleton active />
-                    : <Input.TextArea
-                        className="snippet-editor"
-                        autoSize={{ minRows: 6 }}
-                        onChange={event => {
-                            setPendingContent(event.target.value)
-                        }}
-                        value={content}
-                        showCount={{ formatter: () => pendingContent === null ? "Saved" : "Pending" }}
-                    />}
-            </Col>
-            <Col xs={24} xl={12}>
-                {!snippet ? <Skeleton active />
-                    : content === "" ? <Empty />
-                        : <SnippetMarkdown content={content} />}
-            </Col>
-        </Row>
+        <div className="flex flex-col h-screen pb-6">
+            <div className="px-4 py-4 flex justify-between text-xl">
+                <div className="flex space-x-2 items-center">
+                    <Avatar user={getCurrentUser()} />
+                    <h1>{`${isoWeek} (${startDate.toISODate()} - ${endDate.toISODate()})`}</h1>
+                </div>
+                <div className="flex space-x-1 items-center">
+                    <button onClick={prevWeek} className="w-8 h-8 hover:bg-gray-200 rounded flex items-center justify-center"><LeftCircleOutlined /></button>
+                    <button onClick={nextWeek} className="w-8 h-8 hover:bg-gray-200 rounded flex items-center justify-center"><RightCircleOutlined /></button>
+                    <Link href="/history" className="w-8 h-8 hover:bg-gray-200 rounded flex items-center justify-center"><HistoryOutlined /></Link>
+                </div>
+            </div>
+            {
+                !snippet ? null : (
+                    <div className="grow flex">
+                        <SnippetMarkdown content={content} className="min-w-[65ch]" />
+                        <div className="grow">
+                            <Editor
+                                defaultValue={content}
+                                language="markdown"
+                                options={{
+                                    scrollBeyondLastLine: false,
+                                    minimap: {
+                                        enabled: false,
+                                    }
+                                }}
+                                onChange={(value) => {
+                                    setPendingContent(value ?? '')
+                                }}
+                            />
+                        </div>
+                    </div>
+                )
+            }
+        </div>
     </>
 }
 
@@ -89,10 +91,8 @@ export default function Page() {
         })
     }, [setNow])
     return (
-        <Row>
-            <Col span={20} offset={2}>
-                <SnippetEditor key={`${now.weekYear}-${now.weekNumber}`} year={now.weekYear} week={now.weekNumber} nextWeek={nextWeek} prevWeek={prevWeek} />
-            </Col>
-        </Row>
+        <div className="container mx-auto h-screen">
+            <SnippetEditor key={`${now.weekYear}-${now.weekNumber}`} year={now.weekYear} week={now.weekNumber} nextWeek={nextWeek} prevWeek={prevWeek} />
+        </div>
     )
 }
