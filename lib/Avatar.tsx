@@ -1,11 +1,10 @@
-import Image from 'next/image'
 import { User } from 'firebase/auth'
 
 const Avatar = ({ user }: { user: User }) => {
     if (!user.photoURL) {
         return null;
     }
-    return <Image
+    return <img
         className="rounded-full"
         src={user.photoURL}
         alt={user.displayName ?? "user icon"}
