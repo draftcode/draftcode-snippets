@@ -62,6 +62,7 @@ const SnippetEditor = ({ year, week, nextWeek, prevWeek }: { year: number, week:
                                 language="markdown"
                                 options={{
                                     scrollBeyondLastLine: false,
+                                    quickSuggestions: false,
                                     minimap: {
                                         enabled: false,
                                     }
